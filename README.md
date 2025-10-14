@@ -1,4 +1,4 @@
-### zsh-venv-auto
+## zsh-venv-auto
 
 * Automaticall activate and deactivate Python Virtual Environment when you change directory
 * Installed Virtual Environment directory name must be one of `venv`, `env`, `.venv`, `.env`
