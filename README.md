@@ -1,8 +1,8 @@
 ## zsh-venv-auto
 
+* oh-my-zsh plugin
 * Automaticall activate and deactivate Python Virtual Environment when you change directory
 * Installed Virtual Environment directory name must be one of `venv`, `env`, `.venv`, `.env`
-* oh-my-zsh must be installed
 
 ### Installation
 
