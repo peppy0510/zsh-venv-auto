@@ -1,4 +1,4 @@
-### ZSH VENV Auto
+### zsh-venv-auto
 
 * Automaticall activate and deactivate Python Virtual Environment when you change directory
 * Installed Virtual Environment directory name must be one of `venv`, `env`, `.venv`, `.env`
@@ -16,7 +16,5 @@ vim ~/.zshrc
 ```
 
 ```bash
-plugins=(
-    zsh-venv-auto
-)
+zsh-venv-auto
 ```
