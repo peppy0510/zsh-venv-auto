@@ -30,7 +30,6 @@ auto_activate_venv() {
         current="$(dirname "$current")"
     done
     [[ -n "$VIRTUAL_ENV" ]] && deactivate
-    export PATH=${HOME}/.local/bin${PATH:+:${PATH}}
 }
 
 cd() {
@@ -44,5 +43,3 @@ pushd() {
 popd() {
     builtin popd "$@" && auto_activate_venv
 }
-
-auto_activate_venv

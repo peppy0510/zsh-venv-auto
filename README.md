@@ -18,3 +18,9 @@ vim ~/.zshrc
 ```bash
 zsh-venv-auto
 ```
+
+* Add the initial activation to the end of `~/.zshrc`, below every `PATH` export.
+
+```bash
+(( $+functions[auto_activate_venv] )) && auto_activate_venv
+```
