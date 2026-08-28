@@ -6,14 +6,13 @@ ZSH_ACTIVATED_VIRTUAL_ENV=""
 auto_activate_venv() {
     VIRTUALENV_NAMES=("venv" "env" ".venv" ".env")
     VIRTUALENV_BINDIRS=("bin" "Scripts")
-    current="$PWD"
     if [[ -n "$VIRTUAL_ENV" && -z "$ZSH_ACTIVATED_VIRTUAL_ENV" ]]; then
         for bindir in "${VIRTUALENV_BINDIRS[@]}"; do
-            if [[ -f "$current/$name/${bindir}/activate" ]]; then
-                source "$VIRTUAL_ENV/bin/activate" && deactivate
-            fi
+            path=("${(@)path:#${VIRTUAL_ENV}/${bindir}}")
         done
+        unset VIRTUAL_ENV VIRTUAL_ENV_PROMPT _OLD_VIRTUAL_PATH _OLD_VIRTUAL_PYTHONHOME
     fi
+    current="$PWD"
     while [[ "$current" != "/" ]]; do
         for name in "${VIRTUALENV_NAMES[@]}"; do
             for bindir in "${VIRTUALENV_BINDIRS[@]}"; do
@@ -27,19 +26,13 @@ auto_activate_venv() {
                 fi
             done
         done
-        current="$(dirname "$current")"
+        current="${current:h}"
     done
-    [[ -n "$VIRTUAL_ENV" ]] && deactivate
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        deactivate
+        ZSH_ACTIVATED_VIRTUAL_ENV=""
+    fi
 }
 
-cd() {
-    builtin cd "$@" && auto_activate_venv
-}
-
-pushd() {
-    builtin pushd "$@" && auto_activate_venv
-}
-
-popd() {
-    builtin popd "$@" && auto_activate_venv
-}
+autoload -Uz add-zsh-hook
+add-zsh-hook chpwd auto_activate_venv
