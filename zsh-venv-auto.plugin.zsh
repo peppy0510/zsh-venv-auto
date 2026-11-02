@@ -4,23 +4,31 @@
 ZSH_ACTIVATED_VIRTUAL_ENV=""
 
 auto_activate_venv() {
-    VIRTUALENV_NAMES=("venv" "env" ".venv" ".env")
-    VIRTUALENV_BINDIRS=("bin" "Scripts")
+    local -a names=("venv" "env" ".venv" ".env") bindirs=("bin" "Scripts")
+    local current name bindir activate
     if [[ -n "$VIRTUAL_ENV" && -z "$ZSH_ACTIVATED_VIRTUAL_ENV" ]]; then
-        for bindir in "${VIRTUALENV_BINDIRS[@]}"; do
-            path=("${(@)path:#${VIRTUAL_ENV}/${bindir}}")
-        done
-        unset VIRTUAL_ENV VIRTUAL_ENV_PROMPT _OLD_VIRTUAL_PATH _OLD_VIRTUAL_PYTHONHOME
+        if (( $+functions[deactivate] )); then
+            # activated by hand in this shell: its deactivate puts the prompt back too
+            deactivate
+        else
+            # inherited from a parent shell, which kept the deactivate
+            for bindir in "${bindirs[@]}"; do
+                path=("${(@)path:#${VIRTUAL_ENV}/${bindir}}")
+            done
+            unset VIRTUAL_ENV VIRTUAL_ENV_PROMPT _OLD_VIRTUAL_PATH _OLD_VIRTUAL_PYTHONHOME
+        fi
     fi
     current="$PWD"
     while [[ "$current" != "/" ]]; do
-        for name in "${VIRTUALENV_NAMES[@]}"; do
-            for bindir in "${VIRTUALENV_BINDIRS[@]}"; do
-                if [[ -d "$current/$name" && -f "$current/$name/${bindir}/activate" ]]; then
-                    if [[ "$VIRTUAL_ENV" != "$current/$name" ]]; then
-                        [[ -n "$VIRTUAL_ENV" ]] && deactivate
-                        source "$current/$name/${bindir}/activate"
-                        ZSH_ACTIVATED_VIRTUAL_ENV="$current/$name/${bindir}/activate"
+        for name in "${names[@]}"; do
+            for bindir in "${bindirs[@]}"; do
+                activate="$current/$name/$bindir/activate"
+                if [[ -f "$activate" ]]; then
+                    # by the script found, as VIRTUAL_ENV keeps the path the venv was made at
+                    if [[ "$ZSH_ACTIVATED_VIRTUAL_ENV" != "$activate" || -z "$VIRTUAL_ENV" ]]; then
+                        [[ -n "$VIRTUAL_ENV" ]] && (( $+functions[deactivate] )) && deactivate
+                        source "$activate"
+                        ZSH_ACTIVATED_VIRTUAL_ENV="$activate"
                     fi
                     return
                 fi
@@ -28,8 +36,8 @@ auto_activate_venv() {
         done
         current="${current:h}"
     done
-    if [[ -n "$VIRTUAL_ENV" ]]; then
-        deactivate
+    if [[ -n "$ZSH_ACTIVATED_VIRTUAL_ENV" ]]; then
+        [[ -n "$VIRTUAL_ENV" ]] && (( $+functions[deactivate] )) && deactivate
         ZSH_ACTIVATED_VIRTUAL_ENV=""
     fi
 }
