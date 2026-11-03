@@ -10,6 +10,16 @@
 ### Installation
 
 ```bash
+curl -fsSL https://raw.githubusercontent.com/peppy0510/zsh-venv-auto/main/install.sh | sh
+```
+
+* Works with or without oh-my-zsh; it goes in `${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins` when oh-my-zsh is there, `~/.zsh-venv-auto` otherwise, and downloads with `git`, or `curl`/`wget` when `git` is missing
+* Appends a marked block to the end of `~/.zshrc`, after a backup; the first activation has to come after every `PATH` export, as `deactivate` restores the `PATH` it saw
+* Open a new zsh, or run `exec zsh`
+
+#### Manually, as an oh-my-zsh plugin
+
+```bash
 git clone https://github.com/peppy0510/zsh-venv-auto.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-venv-auto
 ```
 * Add `zsh-venv-auto` to `~/.zshrc` `plugins` section.
@@ -30,6 +40,16 @@ zsh-venv-auto
 
 ### Update
 
+* Run the installation command again, which also moves the block back to the end of `~/.zshrc`, or pull the clone:
+
 ```bash
 git -C ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-venv-auto pull
 ```
+
+### Uninstall
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/peppy0510/zsh-venv-auto/main/uninstall.sh | sh
+```
+
+* Removes the block, a `zsh-venv-auto` entry in `plugins`, the initial activation line and the plugin folder, after backing up `~/.zshrc`
